@@ -6,73 +6,97 @@ const items = [
 		href: '/images/fulls/01.jpg',
 		src: '/images/thumbs/01.jpg',
 		title: 'Magna feugiat lorem',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
+		width: 1024,
+		height: 683
 	},
 	{
 		href: '/images/fulls/02.jpg',
 		src: '/images/thumbs/02.jpg',
 		title: 'Nisl adipiscing',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
+		width: 1024,
+		height: 683
 	},
 	{
 		href: '/images/fulls/03.jpg',
 		src: '/images/thumbs/03.jpg',
 		title: 'Tempus aliquam veroeros',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
+		width: 1024,
+		height: 683
 	},
 	{
 		href: '/images/fulls/04.jpg',
 		src: '/images/thumbs/04.jpg',
 		title: 'Aliquam ipsum sed dolore',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
+		width: 683,
+		height: 1024
 	},
 	{
 		href: '/images/fulls/05.jpg',
 		src: '/images/thumbs/05.jpg',
 		title: 'Cursis aliquam nisl',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
+		width: 1024,
+		height: 682
 	},
 	{
 		href: '/images/fulls/06.jpg',
 		src: '/images/thumbs/06.jpg',
 		title: 'Sed consequat phasellus',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
+		width: 1024,
+		height: 684
 	},
 	{
 		href: '/images/fulls/07.jpg',
 		src: '/images/thumbs/07.jpg',
 		title: 'Mauris id tellus arcu',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
+		width: 1024,
+		height: 583
 	},
 	{
 		href: '/images/fulls/08.jpg',
 		src: '/images/thumbs/08.jpg',
 		title: 'Nunc vehicula id nulla',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
+		width: 1024,
+		height: 583
 	},
 	{
 		href: '/images/fulls/09.jpg',
 		src: '/images/thumbs/09.jpg',
 		title: 'Neque et faucibus viverra',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
+		width: 1024,
+		height: 683
 	},
 	{
 		href: '/images/fulls/10.jpg',
 		src: '/images/thumbs/10.jpg',
 		title: 'Mattis ante fermentum',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
+		width: 1024,
+		height: 583
 	},
 	{
 		href: '/images/fulls/11.jpg',
 		src: '/images/thumbs/11.jpg',
 		title: 'Sed ac elementum arcu',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
+		width: 1024,
+		height: 583
 	},
 	{
 		href: '/images/fulls/12.jpg',
 		src: '/images/thumbs/12.jpg',
 		title: 'Vehicula id nulla dignissim',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
+		width: 1024,
+		height: 583
 	}
 ];
 ---
@@ -81,3 +105,16 @@ const items = [
 		<GalleryItem {...item} />
 	))}
 </div>
+
+<script>
+	import PhotoSwipeLightbox from 'photoswipe/lightbox';
+	import 'photoswipe/style.css';
+
+	const lightbox = new PhotoSwipeLightbox({
+		gallery: '#main',
+		children: 'a.image',
+		pswpModule: () => import('photoswipe')
+	});
+	
+	lightbox.init();
+</script>

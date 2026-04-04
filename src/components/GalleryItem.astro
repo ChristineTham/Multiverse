@@ -4,12 +4,14 @@ interface Props {
 	src: string;
 	title: string;
 	description: string;
+	width: number;
+	height: number;
 }
 
-const { href, src, title, description } = Astro.props;
+const { href, src, title, description, width, height } = Astro.props;
 ---
 <article class="thumb">
-	<a href={href} class="image"><img src={src} alt="" /></a>
+	<a href={href} class="image" data-pswp-width={width} data-pswp-height={height} target="_blank"><img src={src} alt="" /></a>
 	<h2>{title}</h2>
 	<p>{description}</p>
 </article>

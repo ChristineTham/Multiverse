@@ -12,7 +12,7 @@ This is a modern port of the **Multiverse** template from HTML5 UP, converted in
 - **Component-Based**: Modularized into `Header`, `Footer`, `Gallery`, and `GalleryItem` Astro components.
 - **Data-Driven Gallery**: Gallery items are managed via a simple array in `Gallery.astro`, making it easy to add or remove images.
 - **Sass Integration**: Built-in SCSS support with modular stylesheets in `src/styles/`.
-- **Lightbox**: Fully functional Poptrox lightbox (jQuery-based) loaded via `public/js/`.
+- **Lightbox**: Fully functional PhotoSwipe lightbox integrated into the `Gallery` component.
 - **Responsive**: Mobile-first design with synchronized breakpoints between CSS and JS.
 
 ## Getting Started
@@ -20,13 +20,13 @@ This is a modern port of the **Multiverse** template from HTML5 UP, converted in
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (latest LTS recommended)
-- `npm` or `yarn`
+- `pnpm` (preferred) or `npm`
 
 ### Installation
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 ```
 
 ### Development
