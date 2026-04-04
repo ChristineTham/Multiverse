@@ -2,8 +2,7 @@
 import GalleryItem from './GalleryItem.astro';
 import type { ImageMetadata } from 'astro';
 
-const fullImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/fulls/*.jpg', { eager: true });
-const thumbImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/thumbs/*.jpg', { eager: true });
+const fullImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/*.jpg', { eager: true });
 
 const items = [
 	{
@@ -67,21 +66,18 @@ const items = [
 		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	}
 ].map(item => {
-	const fullPath = `/src/assets/images/fulls/${item.id}.jpg`;
-	const thumbPath = `/src/assets/images/thumbs/${item.id}.jpg`;
+	const fullPath = `/src/assets/images/${item.id}.jpg`;
 	
 	return {
 		...item,
-		fullImage: fullImages[fullPath].default,
-		thumbImage: thumbImages[thumbPath].default
+		image: fullImages[fullPath].default
 	};
 });
 ---
 <div id="main">
 	{items.map(item => (
 		<GalleryItem 
-			fullImage={item.fullImage} 
-			thumbImage={item.thumbImage}
+			image={item.image} 
 			title={item.title}
 			description={item.description}
 		/>
