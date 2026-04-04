@@ -1,4 +1,11 @@
 import { defineConfig } from 'astro/config';
+import alpine from '@astrojs/alpinejs';
 
 // https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+    integrations: [
+        alpine({
+            entrypoint: '/src/scripts/alpine.js'
+        })
+    ]
+});

@@ -9,6 +9,7 @@ This is a modern port of the **Multiverse** template from HTML5 UP, converted in
 
 ## Features (Astro Port)
 
+- **Lightweight Logic**: jQuery has been removed and replaced with [Alpine.js](https://alpinejs.dev) for state management and interactivity.
 - **Component-Based**: Modularized into `Header`, `Footer`, `Gallery`, and `GalleryItem` Astro components.
 - **Data-Driven Gallery**: Gallery items are managed via a simple array in `Gallery.astro`, making it easy to add or remove images.
 - **Sass Integration**: Built-in SCSS support with modular stylesheets in `src/styles/`.

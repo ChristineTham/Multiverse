@@ -17,17 +17,36 @@ import '../styles/main.scss';
 		<title>{title}</title>
 		<noscript><link rel="stylesheet" href="/css/noscript.css" /></noscript>
 	</head>
-	<body class="is-preload">
+	<body 
+		x-data="{ 
+			isPreload: true, 
+			isResizing: false,
+			resizeTimeout: null
+		}" 
+		:class="{ 
+			'is-preload': isPreload, 
+			'is-resizing': isResizing, 
+			'content-active': $store.panel.active 
+		}"
+		@load.window="setTimeout(() => isPreload = false, 100)"
+		@resize.window="
+			clearTimeout(resizeTimeout); 
+			isResizing = true; 
+			resizeTimeout = setTimeout(() => isResizing = false, 100)
+		"
+		@keyup.escape.window="$store.panel.hide()"
+		@click="$store.panel.active ? $store.panel.hide() : null"
+	>
 		<div id="wrapper">
 			<slot />
 		</div>
 
 		<!-- Scripts -->
-		<script is:inline src="/js/jquery.min.js"></script>
 		<script is:inline src="/js/browser.min.js"></script>
 		<script is:inline src="/js/breakpoints.min.js"></script>
-		<script is:inline src="/js/util.js"></script>
-		<script is:inline src="/js/main.js"></script>
+		<script>
+			import '../scripts/main.js';
+		</script>
 	</body>
 </html>
 

@@ -4,7 +4,17 @@
 	<h1><a href="/"><strong>Multiverse</strong> by HTML5 UP</a></h1>
 	<nav>
 		<ul>
-			<li><a href="#footer" class="icon solid fa-info-circle">About</a></li>
+			<li>
+				<a 
+					href="#footer" 
+					class="icon solid fa-info-circle" 
+					@click.prevent.stop="$store.panel.toggle()"
+					:class="{ 'active': $store.panel.active }"
+					style="cursor: pointer;"
+				>
+					About
+				</a>
+			</li>
 		</ul>
 	</nav>
 </header>

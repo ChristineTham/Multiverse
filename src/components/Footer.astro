@@ -1,6 +1,11 @@
 ---
 ---
-<footer id="footer" class="panel">
+<footer 
+	id="footer" 
+	class="panel" 
+	:class="{ 'active': $store.panel.active }"
+	@click.stop
+>
 	<div class="inner split">
 		<div>
 			<section>
@@ -45,4 +50,5 @@
 			</section>
 		</div>
 	</div>
+	<div class="closer" @click="$store.panel.hide()"></div>
 </footer>
