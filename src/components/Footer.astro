@@ -52,3 +52,546 @@
 	</div>
 	<div class="closer" @click="$store.panel.hide()"></div>
 </footer>
+
+<style lang="scss">
+@use 'sass:math';
+@use 'sass:color';
+@import '../styles/libs';
+
+/* Footer */
+#footer {
+	.copyright {
+		color: _palette(fg-light);
+		font-size: 0.9em;
+
+		a {
+			color: inherit;
+		}
+	}
+}
+
+/* Panel */
+.panel {
+	@include padding(4em, 4em);
+	@include vendor('transform', 'translateY(100vh)');
+	@include vendor('transition', 'transform #{_duration(panel)} ease');
+	-webkit-overflow-scrolling: touch;
+	background: color.adjust(_palette(bg), $alpha: -0.025);
+	bottom: _size(header);
+	left: 0;
+	max-height: calc(80vh - #{_size(header)});
+	overflow-y: auto;
+	position: fixed;
+	width: 100%;
+	z-index: _misc(z-index-base) + 1;
+
+	&.active {
+		@include vendor('transform', 'translateY(1px)');
+	}
+
+	> .inner {
+		margin: 0 auto;
+		max-width: 100%;
+		width: 75em;
+
+		&.split {
+			@include vendor('display', 'flex');
+
+			> div {
+				margin-left: 4em;
+				width: 50%;
+			}
+
+			> :first-child {
+				margin-left: 0;
+			}
+		}
+	}
+
+	> .closer {
+		@include vendor('transition', 'opacity #{_duration(transition)} ease-in-out');
+		background-image: url('/images/system/close.svg');
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: 3em;
+		cursor: pointer;
+		height: 5em;
+		opacity: 0.25;
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 5em;
+		z-index: 2;
+
+		&:hover {
+			opacity: 1.0;
+		}
+	}
+
+	@include breakpoint('<=large') {
+		@include padding(3em, 3em);
+
+		> .inner {
+			&.split {
+				> div {
+					margin-left: 3em;
+				}
+			}
+		}
+
+		> .closer {
+			background-size: 2.5em;
+			background-position: 75% 25%;
+		}
+	}
+
+	@include breakpoint('<=medium') {
+		> .inner {
+			&.split {
+				@include vendor('flex-direction', 'column');
+
+				> div {
+					margin-left: 0;
+					width: 100%;
+				}
+			}
+		}
+	}
+
+	@include breakpoint('<=small') {
+		@include vendor('transform', 'translateY(-100vh)');
+		@include padding(4em, 2em);
+		bottom: auto;
+		top: calc(#{_size(header)} - 1px);
+
+		&.active {
+			@include vendor('transform', 'translateY(0)');
+		}
+	}
+}
+
+/* Button */
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+button,
+.button {
+	@include vendor('appearance', 'none');
+	@include vendor('transition', (
+		'background-color #{_duration(transition)} ease-in-out',
+		'box-shadow #{_duration(transition)} ease-in-out',
+		'color #{_duration(transition)} ease-in-out'
+	));
+	background-color: transparent;
+	border: 0;
+	border-radius: 0;
+	box-shadow: inset 0 0 0 2px _palette(border);
+	color: _palette(fg-bold) !important;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 0.9em;
+	font-weight: _font(weight-bold);
+	height: _size(element-height) * math.div(1, 0.9);
+	letter-spacing: _font(kerning-alt);
+	line-height: _size(element-height) * math.div(1, 0.9);
+	padding: 0 2.5em;
+	text-align: center;
+	text-decoration: none;
+	text-transform: uppercase;
+	white-space: nowrap;
+
+	&:hover {
+		box-shadow: inset 0 0 0 2px _palette(accent1);
+		color: _palette(accent1) !important;
+
+		&:active {
+			background-color: color.adjust(_palette(accent1), $alpha: -0.85);
+			color: _palette(accent1) !important;
+		}
+	}
+
+	&.icon {
+		padding-left: 1.35em;
+
+		&:before {
+			margin-right: 0.5em;
+		}
+	}
+
+	&.fit {
+		width: 100%;
+	}
+
+	&.small {
+		font-size: 0.8em;
+	}
+
+	&.large {
+		font-size: 1.35em;
+	}
+
+	&.primary {
+		background-color: _palette(accent1);
+		box-shadow: none;
+
+		&:hover {
+			background-color: color.scale(_palette(accent1), $lightness: 10%);
+			color: _palette(fg-bold) !important;
+
+			&:active {
+				background-color: color.scale(_palette(accent1), $lightness: -10%);
+			}
+		}
+	}
+
+	&.disabled,
+	&:disabled {
+		@include vendor('pointer-events', 'none');
+		opacity: 0.35;
+	}
+}
+
+/* Form */
+form {
+	margin: 0 0 _size(element-margin) 0;
+
+	> :last-child {
+		margin-bottom: 0;
+	}
+
+	> .fields  {
+		$gutter: (_size(element-margin) * 0.75);
+
+		@include vendor('display', 'flex');
+		@include vendor('flex-wrap', 'wrap');
+		width: calc(100% + #{$gutter * 2});
+		margin: ($gutter * -1) 0 _size(element-margin) ($gutter * -1);
+
+		> .field {
+			@include vendor('flex-grow', '0');
+			@include vendor('flex-shrink', '0');
+			padding: $gutter 0 0 $gutter;
+			width: calc(100% - #{$gutter * 1});
+
+			&.half {
+				width: calc(50% - #{$gutter * 0.5});
+			}
+
+			&.third {
+				width: calc(#{math.div(100%, 3)} - #{$gutter * math.div(1, 3)});
+			}
+
+			&.quarter {
+				width: calc(25% - #{$gutter * 0.25});
+			}
+		}
+	}
+
+	@include breakpoint('<=small') {
+		> .fields {
+			$gutter: (_size(element-margin) * 0.75);
+
+			width: calc(100% + #{$gutter * 2});
+			margin: ($gutter * -1) 0 _size(element-margin) ($gutter * -1);
+
+			> .field {
+				padding: $gutter 0 0 $gutter;
+				width: calc(100% - #{$gutter * 1});
+
+				&.half {
+					width: calc(100% - #{$gutter * 1});
+				}
+
+				&.third {
+					width: calc(100% - #{$gutter * 1});
+				}
+
+				&.quarter {
+					width: calc(100% - #{$gutter * 1});
+				}
+			}
+		}
+	}
+}
+
+label {
+	color: _palette(fg-bold);
+	display: block;
+	font-size: 0.9em;
+	font-weight: _font(weight-bold);
+	margin: 0 0 (_size(element-margin) * 0.5) 0;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="search"],
+input[type="url"],
+select,
+textarea {
+	@include vendor('appearance', 'none');
+	background: _palette(border-bg);
+	border: 0;
+	border-radius: 0;
+	color: _palette(fg);
+	display: block;
+	outline: 0;
+	padding: 0 1em;
+	text-decoration: none;
+	width: 100%;
+
+	&:invalid {
+		box-shadow: none;
+	}
+
+	&:focus {
+		box-shadow: inset 0 0 0 2px _palette(accent1);
+	}
+}
+
+select {
+	background-image: svg-url("<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' preserveAspectRatio='none' viewBox='0 0 40 40'><path d='M9.4,12.3l10.4,10.4l10.4-10.4c0.2-0.2,0.5-0.4,0.9-0.4c0.3,0,0.6,0.1,0.9,0.4l3.3,3.3c0.2,0.2,0.4,0.5,0.4,0.9 c0,0.4-0.1,0.6-0.4,0.9L20.7,31.9c-0.2,0.2-0.5,0.4-0.9,0.4c-0.3,0-0.6-0.1-0.9-0.4L4.3,17.3c-0.2-0.2-0.4-0.5-0.4-0.9 c0-0.4,0.1-0.6,0.4-0.9l3.3-3.3c0.2-0.2,0.5-0.4,0.9-0.4S9.1,12.1,9.4,12.3z' fill='#{_palette(border)}' /></svg>");
+	background-size: 1.25rem;
+	background-repeat: no-repeat;
+	background-position: calc(100% - 1rem) center;
+	height: _size(element-height);
+	padding-right: _size(element-height);
+	text-overflow: ellipsis;
+
+	option {
+		color: _palette(fg-bold);
+		background: _palette(bg);
+	}
+
+	&:focus {
+		&::-ms-value {
+			background-color: transparent;
+		}
+	}
+
+	&::-ms-expand {
+		display: none;
+	}
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="search"],
+input[type="url"],
+select {
+	height: _size(element-height);
+}
+
+textarea {
+	padding: 0.75em 1em;
+}
+
+input[type="checkbox"],
+input[type="radio"], {
+	@include vendor('appearance', 'none');
+	display: block;
+	float: left;
+	margin-right: -2em;
+	opacity: 0;
+	width: 1em;
+	z-index: -1;
+
+	& + label {
+		@include icon(false, solid);
+		color: _palette(fg);
+		cursor: pointer;
+		display: inline-block;
+		font-size: 1em;
+		font-weight: _font(weight);
+		padding-left: (_size(element-height) * 0.6) + 0.75em;
+		padding-right: 0.75em;
+		position: relative;
+
+		&:before {
+			background: _palette(border-bg);
+			content: '';
+			display: inline-block;
+			font-size: 0.8em;
+			height: (_size(element-height) * 0.75);
+			left: 0;
+			line-height: (_size(element-height) * 0.75);
+			position: absolute;
+			text-align: center;
+			top: 0;
+			width: (_size(element-height) * 0.75);
+		}
+	}
+
+	&:checked + label {
+		&:before {
+			background: _palette(accent1);
+			border-color: _palette(accent1);
+			color: _palette(fg-bold);
+			content: '\f00c';
+		}
+	}
+
+	&:focus + label {
+		&:before {
+			box-shadow: 0 0 0 2px _palette(accent1);
+		}
+	}
+}
+
+input[type="checkbox"] {
+	& + label {
+		&:before {
+		}
+	}
+}
+
+input[type="radio"] {
+	& + label {
+		&:before {
+			border-radius: 100%;
+		}
+	}
+}
+
+::-webkit-input-placeholder {
+	color: _palette(fg-medium) !important;
+	opacity: 1.0;
+}
+
+:-moz-placeholder {
+	color: _palette(fg-medium) !important;
+	opacity: 1.0;
+}
+
+::-moz-placeholder {
+	color: _palette(fg-medium) !important;
+	opacity: 1.0;
+}
+
+:-ms-input-placeholder {
+	color: _palette(fg-medium) !important;
+	opacity: 1.0;
+}
+
+/* Actions */
+ul.actions {
+	@include vendor('display', 'flex');
+	cursor: default;
+	list-style: none;
+	margin-left: (_size(element-margin) * -0.5);
+	padding-left: 0;
+
+	li {
+		padding: 0 0 0 (_size(element-margin) * 0.5);
+		vertical-align: middle;
+	}
+
+	&.special {
+		@include vendor('justify-content', 'center');
+		width: 100%;
+		margin-left: 0;
+
+		li {
+			&:first-child {
+				padding-left: 0;
+			}
+		}
+	}
+
+	&.stacked {
+		@include vendor('flex-direction', 'column');
+		margin-left: 0;
+
+		li {
+			padding: (_size(element-margin) * 0.65) 0 0 0;
+
+			&:first-child {
+				padding-top: 0;
+			}
+		}
+	}
+
+	&.fit {
+		width: calc(100% + #{_size(element-margin) * 0.5});
+
+		li {
+			@include vendor('flex-grow', '1');
+			@include vendor('flex-shrink', '1');
+			width: 100%;
+
+			> * {
+				width: 100%;
+			}
+		}
+
+		&.stacked {
+			width: 100%;
+		}
+	}
+
+	@include breakpoint('<=xsmall') {
+		&:not(.fixed) {
+			@include vendor('flex-direction', 'column');
+			margin-left: 0;
+			width: 100% !important;
+
+			li {
+				@include vendor('flex-grow', '1');
+				@include vendor('flex-shrink', '1');
+				padding: (_size(element-margin) * 0.5) 0 0 0;
+				text-align: center;
+				width: 100%;
+
+				> * {
+					width: 100%;
+				}
+
+				&:first-child {
+					padding-top: 0;
+				}
+
+				input[type="submit"],
+				input[type="reset"],
+				input[type="button"],
+				button,
+				.button {
+					width: 100%;
+
+					&.icon {
+						&:before {
+							margin-left: -0.5rem;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/* Icons */
+ul.icons {
+	cursor: default;
+	list-style: none;
+	padding-left: 0;
+
+	li {
+		display: inline-block;
+		padding: 0 1em 0 0;
+
+		&:last-child {
+			padding-right: 0;
+		}
+
+		.icon {
+			color: _palette(fg-light);
+
+			&:before {
+				font-size: 1.5em;
+			}
+		}
+	}
+}
+</style>

@@ -4,7 +4,6 @@ interface Props {
 }
 
 const { title } = Astro.props;
-import '../styles/main.scss';
 ---
 
 <!DOCTYPE html>
@@ -50,6 +49,539 @@ import '../styles/main.scss';
 	</body>
 </html>
 
-<style is:global>
-	/* Any global styles if needed */
+<style is:global lang="scss">
+	@use 'sass:math';
+	@import '../styles/libs';
+
+	[x-cloak] { display: none !important; }
+
+	.is-preload * {
+		@include vendor('transition', 'none !important');
+		@include vendor('animation', 'none !important');
+	}
+
+	/* Reset */
+
+		html, body, div, span, applet, object,
+		iframe, h1, h2, h3, h4, h5, h6, p, blockquote,
+		pre, a, abbr, acronym, address, big, cite,
+		code, del, dfn, em, img, ins, kbd, q, s, samp,
+		small, strike, strong, sub, sup, tt, var, b,
+		u, i, center, dl, dt, dd, ol, ul, li, fieldset,
+		form, label, legend, table, caption, tbody,
+		tfoot, thead, tr, th, td, article, aside,
+		canvas, details, embed, figure, figcaption,
+		footer, header, hgroup, menu, nav, output, ruby,
+		section, summary, time, mark, audio, video {
+			margin: 0;
+			padding: 0;
+			border: 0;
+			font-size: 100%;
+			font: inherit;
+			vertical-align: baseline;
+		}
+
+		article, aside, details, figcaption, figure,
+		footer, header, hgroup, menu, nav, section {
+			display: block;
+		}
+
+		body {
+			line-height: 1;
+		}
+
+		ol, ul {
+			list-style:none;
+		}
+
+		blockquote,	q {
+			quotes: none;
+
+			&:before,
+			&:after {
+				content: '';
+				content: none;
+			}
+		}
+
+		table {
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+
+		body {
+			-webkit-text-size-adjust: none;
+		}
+
+		mark {
+			background-color: transparent;
+			color: inherit;
+		}
+
+		input::-moz-focus-inner {
+			border: 0;
+			padding: 0;
+		}
+
+		input, select, textarea {
+			-moz-appearance: none;
+			-webkit-appearance: none;
+			-ms-appearance: none;
+			appearance: none;
+		}
+
+	/* Basic */
+
+		// MSIE: Required for IEMobile.
+			@-ms-viewport {
+				width: device-width;
+			}
+
+		// MSIE: Prevents scrollbar from overlapping content.
+			body {
+				-ms-overflow-style: scrollbar;
+			}
+
+		// Ensures page width is always >=320px.
+			@include breakpoint('<=xsmall') {
+				html, body {
+					min-width: 320px;
+				}
+			}
+
+		// Set box model to border-box.
+		// Based on css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice
+			html {
+				box-sizing: border-box;
+			}
+
+			*, *:before, *:after {
+				box-sizing: inherit;
+			}
+
+		body {
+			background: _palette(bg);
+
+			// Stops initial animations until page loads.
+				&.is-preload {
+					*, *:before, *:after {
+						@include vendor('animation', 'none !important');
+						@include vendor('transition', 'none !important');
+					}
+				}
+
+			// Prevents animations while resizing.
+				&.is-resizing {
+					*, *:before, *:after {
+						@include vendor('animation', 'none !important');
+						@include vendor('transition', 'none !important');
+					}
+				}
+
+		}
+
+	/* Type */
+
+		body, input, select, textarea {
+			color: _palette(fg);
+			font-family: _font(family);
+			font-size: 15pt;
+			font-weight: _font(weight);
+			letter-spacing: _font(kerning);
+			line-height: 1.65;
+
+			@include breakpoint('<=xlarge') {
+				font-size: 11pt;
+			}
+		}
+
+		a {
+			@include vendor('transition', (
+				'color #{_duration(transition)} ease-in-out',
+				'border-bottom-color #{_duration(transition)} ease-in-out'
+			));
+			border-bottom: dotted 1px;
+			color: _palette(accent1);
+			text-decoration: none;
+
+			&:hover {
+				border-bottom-color: transparent;
+				color: _palette(accent1) !important;
+			}
+		}
+
+		strong, b {
+			color: _palette(fg-bold);
+			font-weight: _font(weight-bold);
+		}
+
+		em, i {
+			font-style: italic;
+		}
+
+		p {
+			margin: 0 0 _size(element-margin) 0;
+		}
+
+		h1, h2, h3, h4, h5, h6 {
+			color: _palette(fg-bold);
+			font-weight: _font(weight-bold);
+			letter-spacing: _font(kerning-alt);
+			line-height: 1.5;
+			margin: 0 0 (_size(element-margin) * 0.5) 0;
+			text-transform: uppercase;
+
+			a {
+				color: inherit;
+				text-decoration: none;
+			}
+		}
+
+		h1 {
+			font-size: 2em;
+		}
+
+		h2 {
+			font-size: 1.25em;
+		}
+
+		h3 {
+			font-size: 1.1em;
+		}
+
+		h4 {
+			font-size: 1em;
+		}
+
+		h5 {
+			font-size: 0.9em;
+		}
+
+		h6 {
+			font-size: 0.7em;
+		}
+
+		@include breakpoint('<=small') {
+			h2 {
+				font-size: 1em;
+			}
+
+			h3 {
+				font-size: 0.9em;
+			}
+
+			h4 {
+				font-size: 0.8em;
+			}
+
+			h5 {
+				font-size: 0.7em;
+			}
+
+			h6 {
+				font-size: 0.7em;
+			}
+		}
+
+		sub {
+			font-size: 0.8em;
+			position: relative;
+			top: 0.5em;
+		}
+
+		sup {
+			font-size: 0.8em;
+			position: relative;
+			top: -0.5em;
+		}
+
+		blockquote {
+			border-left: 4px _palette(border);
+			font-style: italic;
+			margin: 0 0 _size(element-margin) 0;
+			padding: math.div(_size(element-margin), 4) 0 math.div(_size(element-margin), 4) _size(element-margin);
+		}
+
+		code {
+			background: _palette(border-bg);
+			border: solid 1px _palette(border);
+			font-family: _font(family-fixed);
+			font-size: 0.9em;
+			margin: 0 0.25em;
+			padding: 0.25em 0.65em;
+		}
+
+		pre {
+			-webkit-overflow-scrolling: touch;
+			font-family: _font(family-fixed);
+			font-size: 0.9em;
+			margin: 0 0 _size(element-margin) 0;
+
+			code {
+				display: block;
+				line-height: 1.75;
+				padding: 1em 1.5em;
+				overflow-x: auto;
+			}
+		}
+
+		hr {
+			border: 0;
+			border-bottom: solid 1px _palette(border);
+			margin: _size(element-margin) 0;
+
+			&.major {
+				margin: (_size(element-margin) * 1.5) 0;
+			}
+		}
+
+		.align-left {
+			text-align: left;
+		}
+
+		.align-center {
+			text-align: center;
+		}
+
+		.align-right {
+			text-align: right;
+		}
+
+	/* Wrapper */
+
+		#wrapper {
+			@include vendor('transition', (
+				'-moz-filter #{_duration(panel)} ease',
+				'-webkit-filter #{_duration(panel)} ease',
+				'-ms-filter #{_duration(panel)} ease',
+				'filter #{_duration(panel)} ease'
+			));
+			position: relative;
+
+			&:after {
+				@include vendor('pointer-events', 'none');
+				@include vendor('transition', (
+					'opacity #{_duration(modal)} ease',
+					'visibility #{_duration(modal)}',
+				));
+				background: _palette(bg-overlay-alt);
+				content: '';
+				display: block;
+				height: 100%;
+				left: 0;
+				opacity: 0;
+				position: absolute;
+				top: 0;
+				visibility: hidden;
+				width: 100%;
+				z-index: 1;
+
+				body.ie & {
+					background: _palette(bg-ie-overlay-alt);
+				}
+			}
+
+			body.modal-active & {
+				@include vendor('filter', 'blur(8px)');
+
+				&:after {
+					@include vendor('pointer-events', 'auto');
+					opacity: 1;
+					visibility: visible;
+					z-index: _misc(z-index-base) + 3;
+				}
+			}
+
+			&:before {
+				@include vendor('animation', 'spinner 1s infinite linear !important');
+				@include vendor('pointer-events', 'none');
+				@include vendor('transition', (
+					'top 0.75s ease-in-out',
+					'opacity 0.35s ease-out',
+					'visibility 0.35s'
+				));
+				background-image: url('/images/system/spinner.svg');
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: contain;
+				content: '';
+				display: block;
+				font-size: 2em;
+				height: 2em;
+				left: 50%;
+				line-height: 2em;
+				margin: -1em 0 0 -1em;
+				opacity: 0;
+				position: fixed;
+				text-align: center;
+				top: 75%;
+				visibility: hidden;
+				width: 2em;
+			}
+
+			body.is-preload & {
+				&:before {
+					@include vendor('transition', 'opacity 1s ease-out !important');
+					@include vendor('transition-delay', '0.5s !important');
+					opacity: 0.25;
+					top: 50%;
+					visibility: visible;
+				}
+			}
+		}
+
+	/* List */
+
+		ol {
+			list-style: decimal;
+			margin: 0 0 _size(element-margin) 0;
+			padding-left: 1.25em;
+
+			li {
+				padding-left: 0.25em;
+			}
+		}
+
+		ul {
+			list-style: disc;
+			margin: 0 0 _size(element-margin) 0;
+			padding-left: 1em;
+
+			li {
+				padding-left: 0.5em;
+			}
+
+			&.alt {
+				list-style: none;
+				padding-left: 0;
+
+				li {
+					border-top: solid 1px _palette(border);
+					padding: 0.5em 0;
+
+					&:first-child {
+						border-top: 0;
+						padding-top: 0;
+					}
+				}
+			}
+		}
+
+		dl {
+			margin: 0 0 _size(element-margin) 0;
+
+			dt {
+				display: block;
+				font-weight: _font(weight-bold);
+				margin: 0 0 (_size(element-margin) * 0.5) 0;
+			}
+
+			dd {
+				margin-left: _size(element-margin);
+			}
+		}
+
+	/* Table */
+
+		.table-wrapper {
+			-webkit-overflow-scrolling: touch;
+			overflow-x: auto;
+		}
+
+		table {
+			margin: 0 0 _size(element-margin) 0;
+			width: 100%;
+
+			tbody {
+				tr {
+					border: solid 1px _palette(border);
+					border-left: 0;
+					border-right: 0;
+
+					&:nth-child(2n + 1) {
+						background-color: _palette(border-bg);
+					}
+				}
+			}
+
+			td {
+				padding: 0.75em 0.75em;
+			}
+
+			th {
+				color: _palette(fg-bold);
+				font-size: 0.9em;
+				font-weight: _font(weight-bold);
+				padding: 0 0.75em 0.75em 0.75em;
+				text-align: left;
+			}
+
+			thead {
+				border-bottom: solid 2px _palette(border);
+			}
+
+			tfoot {
+				border-top: solid 2px _palette(border);
+			}
+
+			&.alt {
+				border-collapse: separate;
+
+				tbody {
+					tr {
+						td {
+							border: solid 1px _palette(border);
+							border-left-width: 0;
+							border-top-width: 0;
+
+							&:first-child {
+								border-left-width: 1px;
+							}
+						}
+
+						&:first-child {
+							td {
+								border-top-width: 1px;
+							}
+						}
+					}
+				}
+
+				thead {
+					border-bottom: 0;
+				}
+
+				tfoot {
+					border-top: 0;
+				}
+			}
+		}
+
+	/* Icon */
+
+		.icon {
+			@include icon;
+			border-bottom: none;
+			position: relative;
+
+			> .label {
+				display: none;
+			}
+
+			&:before {
+				line-height: inherit;
+			}
+
+			&.solid {
+				&:before {
+					font-weight: 900;
+				}
+			}
+
+			&.brands {
+				&:before {
+					font-family: 'Font Awesome 5 Brands';
+				}
+			}
+		}
 </style>

@@ -15,3 +15,68 @@ const { href, src, title, description, width, height } = Astro.props;
 	<h2>{title}</h2>
 	<p>{description}</p>
 </article>
+
+<style lang="scss">
+	@use 'sass:math';
+	@import '../styles/libs';
+
+	.thumb {
+		@include vendor('transition', (
+			'opacity 1.25s ease-in-out'
+		));
+		@include vendor('pointer-events', 'auto');
+		-webkit-tap-highlight-color: rgba(255,255,255,0);
+		opacity: 1;
+		overflow: hidden;
+		position: relative;
+
+		&:after {
+			@include vendor('background-image', 'linear-gradient(to top, rgba(10,17,25,0.35) 5%, rgba(10,17,25,0) 35%)');
+			@include vendor('pointer-events', 'none');
+			background-size: cover;
+			content: '';
+			display: block;
+			height: 100%;
+			left: 0;
+			position: absolute;
+			top: 0;
+			width: 100%;
+		}
+
+		> .image {
+			-webkit-tap-highlight-color: rgba(255,255,255,0);
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+			border: 0;
+			height: 100%;
+			left: 0;
+			position: absolute;
+			top: 0;
+			width: 100%;
+
+			img {
+				display: none;
+			}
+		}
+
+		> h2 {
+			@include vendor('pointer-events', 'none');
+			bottom: math.div(1.5em, 0.8);
+			font-size: 0.8em;
+			left: math.div(1.75em, 0.8);
+			margin: 0;
+			position: absolute;
+			z-index: 1;
+		}
+
+		> p {
+			display: none;
+		}
+
+		:global(body.is-preload) & {
+			@include vendor('pointer-events', 'none');
+			opacity: 0;
+		}
+	}
+</style>
