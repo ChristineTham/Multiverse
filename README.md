@@ -11,9 +11,11 @@ This is a modern port of the **Multiverse** template from HTML5 UP, converted in
 
 - **Lightweight Logic**: jQuery has been removed and replaced with [Alpine.js](https://alpinejs.dev) for state management and interactivity.
 - **Component-Based**: Modularized into `Header`, `Footer`, `Gallery`, and `GalleryItem` Astro components.
-- **Data-Driven Gallery**: Gallery items are managed via a simple array in `Gallery.astro`, making it easy to add or remove images.
-- **Optimized Sass**: Modern SCSS structure using component-scoped styles within `.astro` files. Legacy `vendor()` mixins and manual prefixing have been removed in favor of standard CSS and modern build tools.
-- **Unified Design System**: A centralized `libs` module provides shared variables, functions, and mixins across all components via a clean `@import '../styles/libs';` interface.
+- **Data-Driven Gallery**: Gallery items are managed via a simple array in `Gallery.astro`, with images automatically resolved from `src/assets/images` using `import.meta.glob`.
+- **Astro Image Optimization**: Images are processed using Astro's built-in optimization (via `sharp`). This includes automatic format conversion (WebP), resizing, and optimized delivery for both thumbnails and high-resolution views.
+- **Optimized Sass**: Modern SCSS structure using component-scoped styles within `.astro` files. Legacy manual prefixing has been removed in favor of standard CSS and modern build tools.
+- **Modern Iconography**: Replaced self-hosted, monolithic Font Awesome with [astro-icon](https://github.com/natemoo-re/astro-icon). It uses the latest Font Awesome 6 icon sets, delivering only the necessary SVGs for a smaller, faster build.
+- **Unified Design System**: A centralized `libs` module provides shared variables, functions, and mixins across all components via a clean `@use '../styles/libs' as *;` interface.
 - **Lightbox**: Fully functional PhotoSwipe lightbox integrated into the `Gallery` component.
 - **Responsive**: Mobile-first design with synchronized breakpoints between CSS and JS.
 

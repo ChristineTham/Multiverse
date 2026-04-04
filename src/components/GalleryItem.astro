@@ -1,26 +1,30 @@
 ---
+import { Image, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
 interface Props {
-	href: string;
-	src: string;
+	fullImage: ImageMetadata;
+	thumbImage: ImageMetadata;
 	title: string;
 	description: string;
-	width: number;
-	height: number;
 	dataPosition?: string;
 }
 
-const { href, src, title, description, width, height, dataPosition } = Astro.props;
+const { fullImage, thumbImage, title, description, dataPosition } = Astro.props;
+
+const optimizedThumb = await getImage({ src: thumbImage, format: 'webp' });
+const optimizedFull = await getImage({ src: fullImage, format: 'webp' });
 ---
 <article class="thumb">
 	<a 
-		href={href} 
+		href={optimizedFull.src} 
 		class="image" 
-		style={`background-image: url(${src}); background-position: ${dataPosition || 'center'};`}
-		data-pswp-width={width} 
-		data-pswp-height={height} 
+		style={`background-image: url(${optimizedThumb.src}); background-position: ${dataPosition || 'center'};`}
+		data-pswp-width={fullImage.width} 
+		data-pswp-height={fullImage.height} 
 		target="_blank"
 	>
-		<img src={src} alt="" style="display: none;" />
+		<Image src={thumbImage} alt="" style="display: none;" />
 	</a>
 	<h2>{title}</h2>
 	<p>{description}</p>

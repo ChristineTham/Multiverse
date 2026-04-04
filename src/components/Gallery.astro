@@ -1,108 +1,90 @@
 ---
 import GalleryItem from './GalleryItem.astro';
+import type { ImageMetadata } from 'astro';
+
+const fullImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/fulls/*.jpg', { eager: true });
+const thumbImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/thumbs/*.jpg', { eager: true });
 
 const items = [
 	{
-		href: '/images/fulls/01.jpg',
-		src: '/images/thumbs/01.jpg',
+		id: '01',
 		title: 'Magna feugiat lorem',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
-		width: 1024,
-		height: 683
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	},
 	{
-		href: '/images/fulls/02.jpg',
-		src: '/images/thumbs/02.jpg',
+		id: '02',
 		title: 'Nisl adipiscing',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
-		width: 1024,
-		height: 683
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	},
 	{
-		href: '/images/fulls/03.jpg',
-		src: '/images/thumbs/03.jpg',
+		id: '03',
 		title: 'Tempus aliquam veroeros',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
-		width: 1024,
-		height: 683
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	},
 	{
-		href: '/images/fulls/04.jpg',
-		src: '/images/thumbs/04.jpg',
+		id: '04',
 		title: 'Aliquam ipsum sed dolore',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
-		width: 683,
-		height: 1024
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	},
 	{
-		href: '/images/fulls/05.jpg',
-		src: '/images/thumbs/05.jpg',
+		id: '05',
 		title: 'Cursis aliquam nisl',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
-		width: 1024,
-		height: 682
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	},
 	{
-		href: '/images/fulls/06.jpg',
-		src: '/images/thumbs/06.jpg',
+		id: '06',
 		title: 'Sed consequat phasellus',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
-		width: 1024,
-		height: 684
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	},
 	{
-		href: '/images/fulls/07.jpg',
-		src: '/images/thumbs/07.jpg',
+		id: '07',
 		title: 'Mauris id tellus arcu',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
-		width: 1024,
-		height: 583
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	},
 	{
-		href: '/images/fulls/08.jpg',
-		src: '/images/thumbs/08.jpg',
+		id: '08',
 		title: 'Nunc vehicula id nulla',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
-		width: 1024,
-		height: 583
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	},
 	{
-		href: '/images/fulls/09.jpg',
-		src: '/images/thumbs/09.jpg',
+		id: '09',
 		title: 'Neque et faucibus viverra',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
-		width: 1024,
-		height: 683
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	},
 	{
-		href: '/images/fulls/10.jpg',
-		src: '/images/thumbs/10.jpg',
+		id: '10',
 		title: 'Mattis ante fermentum',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
-		width: 1024,
-		height: 583
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	},
 	{
-		href: '/images/fulls/11.jpg',
-		src: '/images/thumbs/11.jpg',
+		id: '11',
 		title: 'Sed ac elementum arcu',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
-		width: 1024,
-		height: 583
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	},
 	{
-		href: '/images/fulls/12.jpg',
-		src: '/images/thumbs/12.jpg',
+		id: '12',
 		title: 'Vehicula id nulla dignissim',
-		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.',
-		width: 1024,
-		height: 583
+		description: 'Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.'
 	}
-];
+].map(item => {
+	const fullPath = `/src/assets/images/fulls/${item.id}.jpg`;
+	const thumbPath = `/src/assets/images/thumbs/${item.id}.jpg`;
+	
+	return {
+		...item,
+		fullImage: fullImages[fullPath].default,
+		thumbImage: thumbImages[thumbPath].default
+	};
+});
 ---
 <div id="main">
 	{items.map(item => (
-		<GalleryItem {...item} />
+		<GalleryItem 
+			fullImage={item.fullImage} 
+			thumbImage={item.thumbImage}
+			title={item.title}
+			description={item.description}
+		/>
 	))}
 </div>
 
