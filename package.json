@@ -3,6 +3,8 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
+    "clean": "rm -rf node_modules .astro dist",
+    "refresh": "pnpm dlx @astrojs/upgrade; pnpm up -L",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",

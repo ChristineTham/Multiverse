@@ -37,14 +37,14 @@ pnpm install
 
 ```bash
 # Start the development server
-npm run dev
+pnpm run dev
 ```
 
 ### Build
 
 ```bash
 # Build for production
-npm run build
+pnpm run build
 ```
 
 ## Credits
