@@ -3,6 +3,7 @@ import { Image, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
 interface Props {
+	id: string;
 	image: ImageMetadata;
 	title: string;
 	description: string;
@@ -16,11 +17,11 @@ const optimizedFull = await getImage({ src: image, format: 'webp' });
 ---
 <article class="thumb">
 	<a 
-		href={optimizedFull.src} 
+		href={optimizedFull.src}
 		class="image" 
 		style={`background-image: url(${optimizedThumb.src}); background-position: ${dataPosition || 'center'};`}
-		data-pswp-width={image.width} 
-		data-pswp-height={image.height} 
+		data-pswp-width={image.width}
+		data-pswp-height={image.height}
 		target="_blank"
 	>
 		<Image src={image} width={600} alt="" style="display: none;" />
