@@ -1,5 +1,8 @@
 {
-  "name": "multiverse-astro",
+  "name": "wonder",
+  "description": "Wonders of the World",
+  "author": "Chris Tham", 
+  "license": "CCA-3.0",
   "type": "module",
   "version": "1.0.0",
   "scripts": {

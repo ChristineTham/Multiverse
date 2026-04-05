@@ -138,7 +138,44 @@ const items: Array<{ id: string } & CollectionEntry<'pages'>['data']> = pages
 		children: 'a.image',
 		pswpModule: () => import('photoswipe')
 	});
+
+	lightbox.on('uiRegister', function() {
+		lightbox.pswp!.ui!.registerElement({
+			name: 'caption',
+			order: 9,
+			isButton: false,
+			appendTo: 'root',
+			html: '',
+			onInit: (el, pswp) => {
+				pswp.on('change', () => {
+					const caption = pswp.currSlide?.data.element?.getAttribute('data-pswp-caption');
+					el.innerHTML = caption || '';
+				});
+			}
+		});
+	});
 	
 	lightbox.init();
 </script>
+
+<style is:global>
+	.pswp__caption {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		padding: 0.75em 1.25em;
+		background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%);
+		color: #fff;
+		font-size: 0.95em;
+		line-height: 1.5;
+		pointer-events: none;
+		box-sizing: border-box;
+	}
+	.pswp__caption strong {
+		display: block;
+		font-size: 1.1em;
+		margin-bottom: 0.2em;
+	}
+</style>
 

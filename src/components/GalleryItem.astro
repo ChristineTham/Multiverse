@@ -22,6 +22,7 @@ const optimizedFull = await getImage({ src: image, format: 'webp' });
 		style={`background-image: url(${optimizedThumb.src}); background-position: ${dataPosition || 'center'};`}
 		data-pswp-width={image.width}
 		data-pswp-height={image.height}
+		data-pswp-caption={`<strong>${title}</strong><br/>${description}`}
 		target="_blank"
 	>
 		<Image src={image} width={600} alt="" style="display: none;" />
