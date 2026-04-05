@@ -14,7 +14,13 @@ It is based on the **Multiverse** template from HTML5 UP, converted into an [Ast
 - **Optimized Sass**: Modern SCSS structure using component-scoped styles within `.astro` files. Legacy manual prefixing has been removed in favor of standard CSS and modern build tools.
 - **Modern Iconography**: Replaced self-hosted, monolithic Font Awesome with [astro-icon](https://github.com/natemoo-re/astro-icon). It uses the latest Font Awesome 6 icon sets, delivering only the necessary SVGs for a smaller, faster build.
 - **Unified Design System**: A centralized `libs` module provides shared variables, functions, and mixins across all components via a clean `@use '../styles/libs' as *;` interface.
-- **Lightbox**: Fully functional PhotoSwipe lightbox integrated into the `Gallery` component.
+- **Lightbox**: Fully functional [PhotoSwipe](https://photoswipe.com/) lightbox integrated into the `Gallery` component. Features include:
+  - Image caption overlay showing title and description
+  - Clickable caption to open detailed info panel
+  - Info button (ⓘ) in the toolbar to open a slide-up panel
+  - Panel displays the full page title, description, and Markdown content
+  - Info panel style matches the Footer's panel design for visual consistency
+  - Panel closes automatically when the lightbox closes
 - **Responsive**: Mobile-first design with synchronized breakpoints between CSS and JS.
 - **Linting**: ESLint (with `eslint-plugin-astro`, `@typescript-eslint`, and `eslint-plugin-jsx-a11y`) and stylelint (with `stylelint-config-standard-scss` and `stylelint-config-html`) are configured with rules appropriate for an Astro + SCSS project.
 
@@ -71,6 +77,16 @@ pnpm check
 # Build for production
 pnpm build
 ```
+
+### Configuration
+
+The site is configured to deploy to a subpath on [christham.net](https://christham.net):
+
+- **Base Path**: Set to `wonder` in `astro.config.mjs`
+- **Site URL**: `https://christham.net`
+- **Deployment URL**: `https://christham.net/wonder/`
+
+Astro automatically prefixes all internal links, assets, and static resources with the base path. PhotoSwipe image loading respects this configuration, so images display correctly at the subpath.
 
 ## Wonders
 

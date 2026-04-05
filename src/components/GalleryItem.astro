@@ -10,7 +10,7 @@ interface Props {
 	dataPosition?: string;
 }
 
-const { image, title, description, dataPosition } = Astro.props;
+const { id, image, title, description, dataPosition } = Astro.props;
 
 const optimizedThumb = await getImage({ src: image, width: 600, format: 'webp' });
 const optimizedFull = await getImage({ src: image, format: 'webp' });
@@ -23,6 +23,7 @@ const optimizedFull = await getImage({ src: image, format: 'webp' });
 		data-pswp-width={image.width}
 		data-pswp-height={image.height}
 		data-pswp-caption={`<strong>${title}</strong><br/>${description}`}
+		data-pswp-id={id}
 		target="_blank"
 	>
 		<Image src={image} width={600} alt="" style="display: none;" />

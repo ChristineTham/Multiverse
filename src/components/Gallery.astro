@@ -1,15 +1,20 @@
 ---
 import GalleryItem from './GalleryItem.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
 const pages = await getCollection('pages');
-const items: Array<{ id: string } & CollectionEntry<'pages'>['data']> = pages
-	.sort((a: CollectionEntry<'pages'>, b: CollectionEntry<'pages'>) => a.id.localeCompare(b.id))
-	.map((page: CollectionEntry<'pages'>) => ({
-		id: page.id,
-		...page.data,
-	}));
+const sortedPages = pages.sort((a: CollectionEntry<'pages'>, b: CollectionEntry<'pages'>) => a.id.localeCompare(b.id));
+const items: Array<{ id: string } & CollectionEntry<'pages'>['data']> = sortedPages.map((page: CollectionEntry<'pages'>) => ({
+	id: page.id,
+	...page.data,
+}));
+const contentStores = await Promise.all(
+	sortedPages.map(async (page: CollectionEntry<'pages'>) => {
+		const { Content } = await render(page);
+		return { id: page.id, title: page.data.title, description: page.data.description, Content };
+	})
+);
 ---
 <div id="main">
 	{items.map(item => (
@@ -22,6 +27,11 @@ const items: Array<{ id: string } & CollectionEntry<'pages'>['data']> = pages
 		/>
 	))}
 </div>
+{contentStores.map(({ id, title, description, Content }) => (
+	<div id={`pswp-content-${id}`} style="display:none" data-title={title} data-description={description}>
+		<Content />
+	</div>
+))}
 
 <style lang="scss">
 	@use 'sass:math';
@@ -139,14 +149,79 @@ const items: Array<{ id: string } & CollectionEntry<'pages'>['data']> = pages
 		pswpModule: () => import('photoswipe')
 	});
 
+	// --- Info panel ---
+	const infoPanel = document.createElement('div');
+	infoPanel.id = 'pswp-info-panel';
+	infoPanel.innerHTML = `
+		<div class="inner">
+			<h2 class="panel-title"></h2>
+			<p class="panel-desc"></p>
+			<div class="panel-body"></div>
+		</div>
+		<div class="closer">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true">
+				<line x1="20" y1="20" x2="44" y2="44"/>
+				<line x1="20" y1="44" x2="44" y2="20"/>
+			</svg>
+		</div>`;
+	document.body.appendChild(infoPanel);
+
+	const panelTitle  = infoPanel.querySelector<HTMLElement>('.panel-title')!;
+	const panelDesc   = infoPanel.querySelector<HTMLElement>('.panel-desc')!;
+	const panelBody   = infoPanel.querySelector<HTMLElement>('.panel-body')!;
+	const panelCloser = infoPanel.querySelector<HTMLElement>('.closer')!;
+
+	function showPanel(id: string) {
+		const store = document.getElementById(`pswp-content-${id}`);
+		if (!store) return;
+		panelTitle.textContent = store.dataset.title ?? '';
+		panelDesc.textContent  = store.dataset.description ?? '';
+		panelBody.innerHTML    = store.innerHTML;
+		infoPanel.classList.add('active');
+	}
+
+	function hidePanel() {
+		infoPanel.classList.remove('active');
+	}
+
+	panelCloser.addEventListener('click', hidePanel);
+
+	// --- PhotoSwipe UI ---
 	lightbox.on('uiRegister', function() {
-		lightbox.pswp!.ui!.registerElement({
+		const pswp = lightbox.pswp!;
+
+		// Close panel when lightbox closes
+		pswp.on('close', hidePanel);
+
+		// Info button in the top bar
+		pswp.ui!.registerElement({
+			name: 'info-button',
+			order: 15,
+			isButton: true,
+			html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+				<path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" fill="currentColor"/>
+			</svg>`,
+			onInit: (btn, pswp) => {
+				btn.addEventListener('click', () => {
+					const id = pswp.currSlide?.data.element?.getAttribute('data-pswp-id');
+					if (id) showPanel(id);
+				});
+			}
+		});
+
+		// Caption overlay (also triggers info panel on click)
+		pswp.ui!.registerElement({
 			name: 'caption',
 			order: 9,
 			isButton: false,
 			appendTo: 'root',
 			html: '',
 			onInit: (el, pswp) => {
+				el.style.cursor = 'pointer';
+				el.addEventListener('click', () => {
+					const id = pswp.currSlide?.data.element?.getAttribute('data-pswp-id');
+					if (id) showPanel(id);
+				});
 				pswp.on('change', () => {
 					const caption = pswp.currSlide?.data.element?.getAttribute('data-pswp-caption');
 					el.innerHTML = caption || '';
@@ -154,11 +229,37 @@ const items: Array<{ id: string } & CollectionEntry<'pages'>['data']> = pages
 			}
 		});
 	});
-	
+
 	lightbox.init();
 </script>
 
 <style is:global>
+	/* PhotoSwipe info button */
+	.pswp__button--info-button {
+		width: 50px;
+		height: 60px;
+		padding: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: none;
+		border: none;
+		cursor: pointer;
+		color: #fff;
+		opacity: 0.75;
+		transition: opacity 0.2s;
+		pointer-events: auto;
+	}
+	.pswp__button--info-button:hover {
+		opacity: 1;
+	}
+	.pswp__button--info-button svg {
+		width: 24px;
+		height: 24px;
+		pointer-events: none;
+	}
+
+	/* PhotoSwipe caption */
 	.pswp__caption {
 		position: absolute;
 		bottom: 0;
@@ -169,13 +270,106 @@ const items: Array<{ id: string } & CollectionEntry<'pages'>['data']> = pages
 		color: #fff;
 		font-size: 0.95em;
 		line-height: 1.5;
-		pointer-events: none;
+		pointer-events: auto;
 		box-sizing: border-box;
 	}
 	.pswp__caption strong {
 		display: block;
 		font-size: 1.1em;
 		margin-bottom: 0.2em;
+	}
+
+	/* Info panel — matches Footer .panel */
+	#pswp-info-panel {
+		position: fixed;
+		bottom: 4em;
+		left: 0;
+		width: 100%;
+		max-height: calc(80vh - 4em);
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+		background: #242629;
+		padding: 4em;
+		transform: translateY(100vh);
+		transition: transform 0.5s ease;
+		z-index: 999999;
+		box-sizing: border-box;
+	}
+
+	#pswp-info-panel.active {
+		transform: translateY(1px);
+	}
+
+	#pswp-info-panel .inner {
+		margin: 0 auto;
+		max-width: 75em;
+		width: 100%;
+	}
+
+	#pswp-info-panel .inner .panel-title {
+		color: #ffffff;
+		font-size: 1.75em;
+		font-weight: 300;
+		margin-bottom: 0.5em;
+	}
+
+	#pswp-info-panel .inner .panel-desc {
+		color: #505051;
+		font-size: 1em;
+		margin-bottom: 1.5em;
+	}
+
+	#pswp-info-panel .inner .panel-body {
+		color: #a0a0a1;
+		line-height: 1.75;
+	}
+
+	#pswp-info-panel .inner .panel-body p {
+		margin-bottom: 1em;
+	}
+
+	#pswp-info-panel .closer {
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 5em;
+		opacity: 0.25;
+		position: absolute;
+		right: 0;
+		top: 0;
+		transition: opacity 0.2s ease-in-out;
+		width: 5em;
+	}
+
+	#pswp-info-panel .closer:hover {
+		opacity: 1;
+	}
+
+	#pswp-info-panel .closer svg {
+		width: 3em;
+		height: 3em;
+	}
+
+	#pswp-info-panel .closer svg line {
+		stroke: #ffffff;
+		stroke-width: 1.5px;
+	}
+
+	@media (max-width: 1280px) {
+		#pswp-info-panel { padding: 3em; }
+	}
+
+	@media (max-width: 480px) {
+		#pswp-info-panel {
+			padding: 4em 2em;
+			bottom: auto;
+			top: calc(4em - 1px);
+			transform: translateY(-100vh);
+		}
+		#pswp-info-panel.active {
+			transform: translateY(0);
+		}
 	}
 </style>
 
