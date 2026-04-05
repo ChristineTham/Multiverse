@@ -48,19 +48,6 @@ const canonicalUrl = `${siteUrl}${basePath}/pages/${page.id}`;
 	</div>
 	<Footer />
 </Layout>
-	<div id="main">
-		<article id="page-content">
-			<a href="/" class="back-link">&larr; Back to Gallery</a>
-			<Image src={page.data.image} alt={page.data.title} />
-			<h2>{page.data.title}</h2>
-			<p class="description">{page.data.description}</p>
-			<div class="content">
-				<Content />
-			</div>
-		</article>
-	</div>
-	<Footer />
-</Layout>
 
 <style lang="scss">
 	@import '../../styles/libs';
